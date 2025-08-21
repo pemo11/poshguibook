@@ -1,4 +1,4 @@
-# GUIs for the Console Window
+# GUIs for the Console Window (TUIs)
 
 GUIs for the Console Window are text based only, so logically they are abrevated as **TUIs**. Altough using a TUI means no drawings, no pixels, no bitmaps etc. its absolutely amazing what can be done with libraries like *ncurses* or *PDCurses* (they are probably many more).
 
