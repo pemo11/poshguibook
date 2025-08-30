@@ -27,13 +27,22 @@ $f.Text = "Aloa!"
 Or if you prefer a one liner:
 
 ```PowerShell
-[System.Windows.Forms.Application]::Run((New-Object System.Windows.Forms.Form -Property @{ Text = 'Aloa!' }))
-
+ [System.Windows.Forms.Application]::Run((& {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a}))
 ```
 
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
 
-Thats a lot of typing for displaying a simple Window. But since these commands are allmost used inside a script the effort is not as much as it might seem. And there are some helpers that will generate all these commands for you (more on this later).
+**expert mode:**
+
+*PowerShell* is a fascinating scripting language, even after nearly 20 years (version 1.0 was released in 2006).
+
+Thanks to user *mklement0* on *StackOverflow* here is a really cool alternative that is using a *hashtable* for initializing the properties on an object (if it has a public constructor without parameters):
+
+```PowerShell
+[System.Windows.Forms.Application]::Run([System.Windows.Forms.Form]@{ Text="Aloha!" })
+```
+
+But since these commands are usually part of a script there is no need to come up with such clever abbrevations. And there are some helpers that will generate all these commands for you (more on this later).
 
 ## The Add-Type command and the using namespace directive
 
@@ -58,8 +67,7 @@ Using Namespace System.Windows.Forms
 Now everything becomes a little simpler.
 
 ```PowerShell
-[Application]::Run((New-Object Form -Property @{ Text = 'Aloa!' }))
-
+[Application]::Run([Form]@{ Text="Aloha!" })
 ```
 
 **note:**
@@ -79,5 +87,5 @@ There are two ways to show the new window:
 1. By using the static *ShowDialog()* method
 2. By using the *run()* method of the *Application* class
 
-
+*** to be continued ***
 
