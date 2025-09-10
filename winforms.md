@@ -22,15 +22,31 @@ The following example displays a Windows on the screen. You can type this comman
 Add-Type -AssemblyName System.Windows.Forms
 $f = [System.Windows.Forms.Form]::new()
 $f.Text = "Aloa!"
-[System.Windows.Forms.Application]::Run($f)
+$f.ShowDialog()
 ```
 Or if you prefer a one liner:
 
 ```PowerShell
- [System.Windows.Forms.Application]::Run((& {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a}))
+& {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a.ShowDialog()}
 ```
-
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
+
+The form is show as a dialog and not as "real" window. In practice this distinction is not so important since in most cases a dialog box all that is needed and wanted.
+
+But a dialog box does not have its own message loop.
+
+To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the commandline but in the *PowerShell ISE* on *Windows* for example.
+
+**example:**
+
+The following example creates a "real" Window. To present an alternative, the *Form* class is instantiated by the *New-Object*-Cmdlet.
+
+```PowerShell
+using namespace System.Windows.Forms
+
+$f = New-Object -Type Form -Property @{"Text" = "Example 1"}
+[Application]::Run($f)
+```
 
 **expert mode:**
 
@@ -69,12 +85,11 @@ Now everything becomes a little simpler.
 ```PowerShell
 [Application]::Run([Form]@{ Text="Aloha!" })
 ```
-
 **note:**
 In the command line *Using Namespace* can only hold one reference so using it twice will override the first "shortcut". Inside a script you can use as many *using namespace* as you like.
 
 **note:**
-I have absolutely of proof for the following assertion. But when *Jeffrey Snover* once asked me what feature was missing in the version 2.0 of *PowerShell* I said there should be a "using namespace" like in *C#*.
+I have absolutely of proof for the following assertion. But when *Jeffrey Snover* (the inventor of what became later *PowerShell*) once asked me at a software developer conference what feature was missing in the version 2.0 of *PowerShell* I said there should be a "using namespace" like in *C#*.
 
 ## The form class
 
@@ -87,5 +102,73 @@ There are two ways to show the new window:
 1. By using the static *ShowDialog()* method
 2. By using the *run()* method of the *Application* class
 
-*** to be continued ***
+For the PowerShell CLI only *ShowDialog()* works.
 
+## Control classes
+
+The *System.Windows.Forms* namespace contains serveral dozen control classes. A few examples are *Button* (for a command button), *label* (for a text field), *TextBox* (for a text input field) or *ListBox* (for a list of text items).
+
+Each of theses classes are instantiated through its static *new* method.
+
+**example:**
+
+The following example creates a command button.
+
+```PowerShell
+[System.Windows.Forms.Button]::New()
+```
+or a little shorter assuming a `using namespace System.Windows.Forms`:
+
+```PowerShell
+[Button]::New()
+```
+Since it does not make any sense to create the instance of class without assigning it to variable there has to an assignment to a PowerShell variable.
+
+```PowerShell
+$btn1 = [Button]::New()
+```
+
+And it does make any sense to not set at least the *Text*-Property so something is displayed inside the button area.
+
+This can be done either in two steps:
+
+```PowerShell
+$btn1 = [Button]::New()
+$btn1.Text = "Click Me!"
+```
+
+It can also be done when instanciating the class but only by using the *New-Object* cmdlet and its *Property*-Parameter and a hashtable.
+
+```PowerShell
+$btn1 = New-Object -Type Button -Property @{Text = "Click Me!"}
+```
+
+Using this syntax is more convenient if several properties should be set. And its really convenient if several controls should be set with the same property values since a single hashtable variable can be used.
+
+Having a button does not mean that its already visible. It has to added to the *Control* collection of either the *Form* or another control with a *Control* property.
+
+**example:**
+
+The following example creates a form with a button and displays the form (with the button of course).
+
+```PowerShell
+using namespace System.Windows.Forms
+
+$f = New-Object -Type Form -Property @{"Text" = "Example 1"}
+$btn1 = New-Object -Type Button -Property @{Text = "Click Me!"}
+$f.Controls.Add($btn1)
+$f.ShowDialog()
+```
+
+
+```PowerShell
+using namespace System.Windows.Forms
+using namespace System.Drawing
+
+$f = New-Object -Type Form -Property @{"Text" = "Example 1"}
+$btn1 = New-Object -Type Button -Property @{Text = "Click Me!";Width=120;Height=34}
+$pos1 = [Point]::new(($f.ClientRectangle.Width/2-$btn1.Width/2),($f.ClientRectangle.Height / 2 - $btn1.Height / 2))
+$btn1.Location = $pos1
+$f.Controls.Add($btn1)
+$f.ShowDialog()
+```
