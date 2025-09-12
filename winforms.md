@@ -1,8 +1,10 @@
 # GUIs based on Windows Forms (WinForms)
 
+**last update**: 09/12/2025
+
 *WinForms* (or *WinForms* for short) is the name for the classes in the namespace *Syxstem.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
 
-*WinForms* does **NOT** work on *Linux*, *MacOS* etc.
+*WinForms* (as part of *.Net*) does **NOT** work on *Linux*, *MacOS* etc. (although there have been working implementations as part of the *Mono* project)
 
 It can be used for PowerShell scripts very easily, but again **Windows only**.
 
@@ -179,6 +181,9 @@ $f.Controls.Add($btn1)
 $f.ShowDialog()
 ```
 
+**example:**
+
+The following example creates a form with a button and displays the form. But this time the button is placed in the middle of the inner "client area" of the form. Its amazing how much more effort this little additional feature requires. For setting a position, the *Point* class from the *System.Drawing* namespace is needed. And calculating the middle position requires some "math" which is not a part where *PowerShell* stands out.
 
 ```PowerShell
 using namespace System.Windows.Forms
@@ -190,4 +195,52 @@ $pos1 = [Point]::new(($f.ClientRectangle.Width/2-$btn1.Width/2),($f.ClientRectan
 $btn1.Location = $pos1
 $f.Controls.Add($btn1)
 $f.ShowDialog()
+```
+
+## Connecting events
+
+Controls like a *Button* are meant for that something happens when the button is clicked. The purpose of a *ListBox* is not only to display several items but also that something happens when an item is selected. To achieve an action the events come into the play. An event is a another name for a callback mechanism that allows an internal call to call any outside methods that have "subscribed" to that call.
+
+Each control offers several dozen events like *Click*, *MouseClick* or *GotFocus* and many more.
+
+**example**
+
+Since events are members like *Properties* and *Methods* they can be listed to by *Get-Member*. The following example lists all of the 94 (!) events of the *Form* class.
+
+```PowerShell
+[System.WIndows.Forms.Form]::New() | Get-Member -MemberType Event
+```
+or by going directly through the *type* object:
+
+```PowerShell
+[System.Windows.Forms.Form].GetEvents().Name
+```
+
+How can a PowerShell function subscribe to an event? Although *PowerShell* offers Cmdlets for dealing with events like *New-Event* its much easier to use the (private) methods that are added by the *PowerShell Type System*. For every event an object offers, the type system adds a method for adding a scriptblock that will handle that event. The name of that method always starts with "add_" followed by the name of the event. The *add_click*-method adds a scriptblock for handling the *click* event.
+
+**example**
+
+The following example lists all "event handler method" of the *Form* class.
+
+```Powershell
+[System.Windows.Forms.Form]::new() | Get-Member -MemberType Method -Name add_* -Force
+```
+
+All the methods accept either a *System.EventHandler* or an object that is derived from *System.EventHandler*. Thanks to the virtuosity of the *PowerShell* type system any Scriptblock can be used which will be type casted to an *EventHandler* object.
+
+**example**
+
+The following examples display a form with a button. Clicking the button will display a messagebox. Since the script only contains the bare minimum neeed to display the form with a button it does not look nice but the click event has been connected with a Scriptblock.
+
+```PowerShell
+using namespace System.Windows.Forms
+
+$f = [Form]::New()
+$f.Text = "Aloha"
+$btn1 = [Button]::New()
+$btn1.Text = "Click Me!"
+$f.Controls.Add($btn1)
+$btn1.add_click({ [Messagebox]::Show("Thank you for clicking me!", [DateTime]::Now)})
+$f.ShowDialog()
+
 ```
