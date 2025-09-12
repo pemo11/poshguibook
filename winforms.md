@@ -10,7 +10,26 @@ Although *PowerShell 7* can be used on many platforms, unfortunately this does n
 
 ## What is WinForms?
 
-*WinForms* is the short name for the classes in the two namespaces *System.Windows.Forms* and *System.Drawing*. One example is the *Form* class that represents a rectangle area on the screen with certain visual attributes like a border, a title and the builtin abiblity to move the retangle with a mouse. The rectangle is either called *Window* or *Dialog box*.
+*WinForms* is the short name for several dozen classes in the two namespaces *System.Windows.Forms* and *System.Drawing*. Where as the classes in *System.Windows.Forms* contains the definitions for the different control types, the classes in *System.Drawing* are responsible for drawing the controls to the screen.
+
+**example:**
+
+Its no problem of course to display the name of all public classes in the *System.Windows.Forms* namespace. Since the assembly *System.Windows.Forms.dll* that contains the class definition is not loaded per default it has to be loaded with the *Add-Type* cmdlet first.
+
+```PowerShell
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.Form].Assembly.GetTypes().Where{$_.IsClass -and $_.IsPublic}.Name
+```
+
+**example:**
+
+Since these are to many names, the next example only display classes who base type name is neither "object" nor does it contains the name "delegate" nor does it ends with "eventargs". This results in a much shorter list with mostly only "important" classes.
+
+```PowerShell
+[System.Windows.Forms.Form].Assembly.GetTypes().Where{$_.IsClass -and $_.IsPublic -and $_.BaseType.Name -ne "Object" -and $_.BaseType.Name -notmatch "Delegate" -and $_.BaseType.Name -notlike "*eventargs"}.Name
+```
+
+One example of a control class is the *Form* class that represents a rectangle area on the screen with certain visual attributes like a border, a title and the builtin abiblity to move the retangle with a mouse. The rectangle is either called *Window* or *Dialog box*.
 
 Since the classes of both *System.Windows.Forms* and *System.Drawing* are both part of the .Net Runtime and therefore part of *PowerShell* as well there is no need to install anything. Everything works "out of the box".
 
