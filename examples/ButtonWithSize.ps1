@@ -16,4 +16,4 @@ $btn1.Size = [Drawing.Size]::New(120,50)
 $form = [Form]::New()
 $form.Text = "Form with Button"
 $form.Controls.Add($btn1)
-$form.ShowDialog()
+[Void]$form.ShowDialog()

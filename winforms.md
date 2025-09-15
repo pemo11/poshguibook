@@ -54,6 +54,10 @@ Or if you prefer a one liner:
 
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
 
+**note:**
+
+Since *ShowDialog()* returns a *True/False* parameter indicating if the dialogbox had been closed through the *OK* (*True*) or the *Cancel* (*False*) button its often preceded by a *[Void]* so that the return value is not put into the pipeline.
+
 The form is shown as a dialog and not as "real" window. In practice this distinction is not so important since in most cases a dialog box is all that is needed and wanted.
 
 A dialog box does not have its own message loop.

@@ -12,4 +12,4 @@ $btn1.Text = "Click Me!"
 $form = [Form]::New()
 $form.Text = "Form with Button"
 $form.Controls.Add($btn1)
-$form.ShowDialog()
+[Void]$form.ShowDialog()
