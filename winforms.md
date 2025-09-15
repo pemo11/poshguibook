@@ -25,7 +25,7 @@ Add-Type -AssemblyName System.Windows.Forms
 
 **example:**
 
-Since these are to many names, the next example only display classes who base type name is neither "object" nor does it contains the name "delegate" nor does it ends with "eventargs". This results in a much shorter list with mostly only "important" classes.
+Since the output contains too many names, the next example only display classes who base type name is neither "object" nor does it contains the name "delegate" nor does it ends with "eventargs" since these classes are definitely no control classes. This results in a much shorter list with mostly only "important" classes.
 
 ```PowerShell
 [System.Windows.Forms.Form].Assembly.GetTypes().Where{$_.IsClass -and $_.IsPublic -and $_.BaseType.Name -ne "Object" -and $_.BaseType.Name -notmatch "Delegate" -and $_.BaseType.Name -notlike "*eventargs"}.Name
@@ -37,7 +37,7 @@ Since the classes of both *System.Windows.Forms* and *System.Drawing* are both p
 
 **example:**
 
-The following example displays a Windows on the screen. You can type this command in the PowerShell commandline (both Windows PowerShell and PowerShell 7 on Windows).
+The following example displays a Window on the screen. You can type this command in the PowerShell CLI (both Windows PowerShell and PowerShell 7 on Windows).
 
 ```PowerShell
 Add-Type -AssemblyName System.Windows.Forms
@@ -45,22 +45,24 @@ $f = [System.Windows.Forms.Form]::new()
 $f.Text = "Aloa!"
 $f.ShowDialog()
 ```
+
 Or if you prefer a one liner:
 
 ```PowerShell
 & {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a.ShowDialog()}
 ```
+
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
 
-The form is show as a dialog and not as "real" window. In practice this distinction is not so important since in most cases a dialog box all that is needed and wanted.
+The form is shown as a dialog and not as "real" window. In practice this distinction is not so important since in most cases a dialog box is all that is needed and wanted.
 
-But a dialog box does not have its own message loop.
+A dialog box does not have its own message loop.
 
-To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the commandline but in the *PowerShell ISE* on *Windows* for example.
+To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the CLI but in the *PowerShell ISE* on *Windows* for example.
 
 **example:**
 
-The following example creates a "real" Window. To present an alternative, the *Form* class is instantiated by the *New-Object*-Cmdlet.
+The following example creates a "real" Window. To present an alternative, the *Form* class is instantiated by the *New-Object*-Cmdlet. A small advantage is that properties can be set through the *Property* parameter.
 
 ```PowerShell
 using namespace System.Windows.Forms
@@ -71,15 +73,13 @@ $f = New-Object -Type Form -Property @{"Text" = "Example 1"}
 
 **expert mode:**
 
-*PowerShell* is a fascinating scripting language, even after nearly 20 years (version 1.0 was released in 2006).
-
-Thanks to user *mklement0* on *StackOverflow* here is a really cool alternative that is using a *hashtable* for initializing the properties on an object (if it has a public constructor without parameters):
+*PowerShell* is a fascinating scripting language, even after nearly 20 years (version 1.0 was released in 2006). Thanks to user *mklement0* on *StackOverflow* here is a really cool alternative that is using a *hashtable* for initializing the properties on an object (if it has a public constructor without parameters):
 
 ```PowerShell
 [System.Windows.Forms.Application]::Run([System.Windows.Forms.Form]@{ Text="Aloha!" })
 ```
 
-But since these commands are usually part of a script there is no need to come up with such clever abbrevations. And there are some helpers that will generate all these commands for you (more on this later).
+But since these commands are usually part of a script there is no need to come up with such abbrevations. And there are usually some helpers that will generate all these commands for you (more on this later).
 
 ## The Add-Type command and the using namespace directive
 
@@ -196,6 +196,15 @@ $btn1.Location = $pos1
 $f.Controls.Add($btn1)
 $f.ShowDialog()
 ```
+
+### Placing a control in a container
+
+A control is always placed inside a container. A container is either the *Form* or a container control like a *GroupBox*. Each control has a *Location* property that expects a *Point* object.
+
+### Setting the size of a control
+
+A control has a *height* and a *width* property that sets the size of the control. The unit is pixel. There is a also a *Size* property for setting both the height and the width. This property expects a *Rectangle* object.
+
 
 ## Connecting events
 
