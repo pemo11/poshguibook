@@ -58,7 +58,7 @@ The form is shown as a dialog and not as "real" window. In practice this distinc
 
 A dialog box does not have its own message loop.
 
-To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the CLI but in the *PowerShell ISE* on *Windows* for example.
+To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the CLI but in *VS Code* or *PowerShell ISE* on *Windows* for example.
 
 **example:**
 
