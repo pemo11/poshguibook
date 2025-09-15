@@ -1,6 +1,6 @@
 # GUIs based on Windows Forms (WinForms)
 
-**last update**: 09/12/2025
+**last update**: 15/09/2025
 
 *WinForms* (or *WinForms* for short) is the name for the classes in the namespace *Syxstem.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
 
@@ -106,6 +106,7 @@ Now everything becomes a little simpler.
 ```PowerShell
 [Application]::Run([Form]@{ Text="Aloha!" })
 ```
+
 **note:**
 In the command line *Using Namespace* can only hold one reference so using it twice will override the first "shortcut". Inside a script you can use as many *using namespace* as you like.
 
@@ -129,7 +130,7 @@ For the PowerShell CLI only *ShowDialog()* works.
 
 The *System.Windows.Forms* namespace contains serveral dozen control classes. A few examples are *Button* (for a command button), *label* (for a text field), *TextBox* (for a text input field) or *ListBox* (for a list of text items).
 
-Each of theses classes are instantiated through its static *new* method.
+Each of theses classes are instantiated through its static *new* method that is always parameterless.
 
 **example:**
 
@@ -199,7 +200,12 @@ $f.ShowDialog()
 
 ### Placing a control in a container
 
-A control is always placed inside a container. A container is either the *Form* or a container control like a *GroupBox*. Each control has a *Location* property that expects a *Point* object.
+A control is always placed inside a container. A container is either the *Form* or a container control like a *GroupBox*. Each control has a *Location* property that expects a *Point* object. The upper left corner has the location 0/0.
+
+**example:**
+
+The following example places three button in a horizontal line.
+
 
 ### Setting the size of a control
 
