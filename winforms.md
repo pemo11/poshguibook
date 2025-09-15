@@ -31,7 +31,7 @@ Since the output contains too many names, the next example only display classes 
 [System.Windows.Forms.Form].Assembly.GetTypes().Where{$_.IsClass -and $_.IsPublic -and $_.BaseType.Name -ne "Object" -and $_.BaseType.Name -notmatch "Delegate" -and $_.BaseType.Name -notlike "*eventargs"}.Name
 ```
 
-One example of a control class is the *Form* class that represents a rectangle area on the screen with certain visual attributes like a border, a title and the builtin abiblity to move the retangle with a mouse. The rectangle is either called *Window* or *Dialog box*.
+One example of a control class is the *Form* class that represents a rectangle area on the screen with certain visual attributes like a thick border, a title and the builtin abibility to resize and move the retangle with a mouse. The rectangle is either called *Window* or *Dialogbox*.
 
 Since the classes of both *System.Windows.Forms* and *System.Drawing* are both part of the .Net Runtime and therefore part of *PowerShell* as well there is no need to install anything. Everything works "out of the box".
 
@@ -52,17 +52,19 @@ Or if you prefer a one liner:
 & {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a.ShowDialog()}
 ```
 
+In both cases the windows is shown "modal". That just means its blocking all other windows of that application so none of them can get the focus. In case of the *PowerShell CLI* the PowerShell console is blocked.
+
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
 
 **note:**
 
 Since *ShowDialog()* returns a *True/False* parameter indicating if the dialogbox had been closed through the *OK* (*True*) or the *Cancel* (*False*) button its often preceded by a *[Void]* so that the return value is not put into the pipeline.
 
-The form is shown as a dialog and not as "real" window. In practice this distinction is not so important since in most cases a dialog box is all that is needed and wanted.
+The form is shown as a dialog and not as a "real" window. In practice this distinction is not so important since in most cases a dialogbox is all that is needed and wanted.
 
-A dialog box does not have its own message loop.
+A dialogbox does not have its own message loop.
 
-To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is caveat. This can not be done in the CLI but in *VS Code* or *PowerShell ISE* on *Windows* for example.
+To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is a caveat. This can not be done in the CLI but in *VS Code* or *PowerShell ISE* on *Windows* for example.
 
 **example:**
 
@@ -119,7 +121,7 @@ I have absolutely of proof for the following assertion. But when *Jeffrey Snover
 
 ## The form class
 
-The *form* class represents a window. It can be the main window of the application but it can also be a dialog box.
+The *form* class represents a window. It can be the main window of the application but it can also be a dialogbox.
 
 The first step is to create a new *form* object.
 
