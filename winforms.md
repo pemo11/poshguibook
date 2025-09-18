@@ -52,7 +52,7 @@ Or if you prefer a one liner:
 & {$a=[System.Windows.Forms.Form]::new();$a.Text="Aloha!";$a.ShowDialog()}
 ```
 
-In both cases the windows is shown "modal". That just means its blocking all other windows of that application so none of them can get the focus. In case of the *PowerShell CLI* the PowerShell console is blocked.
+In both cases the windows is shown "modal". That just means its blocking all other windows of that application so none of them can get the focus. In case of the *PowerShell CLI* the PowerShell console is blocked. This does not happen of course when the Form is shown by using the *Run()* method of the *System.Windows.Forms.Application* class.
 
 What happened to the *Add-Type*-Cmdlet? Its needed only once in a PowerShell session (and is not necessary if you are still using the "ISE";).
 
@@ -62,7 +62,9 @@ Since *ShowDialog()* returns a *True/False* parameter indicating if the dialogbo
 
 The form is shown as a dialog and not as a "real" window. In practice this distinction is not so important since in most cases a dialogbox is all that is needed and wanted.
 
-A dialogbox does not have its own message loop.
+**note:**
+
+A dialogbox does not have its own message loop. This means that they are used in the context of a "parent window". One consequence is that it blocks the parent window. Although its possible to pass the handle of a "owner window" with the *ShowDialog()* method this has no practical use with *PowerShell*.
 
 To create a "real" window based on a form the static *Run()* method of the *System.Windows.Forms.Application* class is used. But there is a caveat. This can not be done in the CLI but in *VS Code* or *PowerShell ISE* on *Windows* for example.
 
@@ -103,20 +105,30 @@ The full name of the *form* class is *System.Windows.Form.Form*, the full name o
 
 Wouldn't it be convinient if the namespace does not have to be include each time? This would be very convinient and its possible by using the *using namespace* directive at the beginning.
 
+**example:**
+
+The following example uses *using namespace* to that the namespace become optional.
+
 ```PowerShell
 Using Namespace System.Windows.Forms
 ```
 
 Now everything becomes a little simpler.
 
+**example:**
+
+The following examples shows a Form as a modeless window by not having to use the namespace each time.
+
 ```PowerShell
 [Application]::Run([Form]@{ Text="Aloha!" })
 ```
 
 **note:**
-In the command line *Using Namespace* can only hold one reference so using it twice will override the first "shortcut". Inside a script you can use as many *using namespace* as you like.
+
+In the CLI *Using Namespace* can only hold one reference at a time so using it twice will override the first "shortcut". Inside a script you can use as many *using namespace* statements as you like.
 
 **note:**
+
 I have absolutely of proof for the following assertion. But when *Jeffrey Snover* (the inventor of what became later *PowerShell*) once asked me at a software developer conference what feature was missing in the version 2.0 of *PowerShell* I said there should be a "using namespace" like in *C#*.
 
 ## The form class
@@ -150,6 +162,7 @@ or a little shorter assuming a `using namespace System.Windows.Forms`:
 ```PowerShell
 [Button]::New()
 ```
+
 Since it does not make any sense to create the instance of class without assigning it to variable there has to an assignment to a PowerShell variable.
 
 ```PowerShell
@@ -212,11 +225,27 @@ A control is always placed inside a container. A container is either the *Form* 
 
 The following example places three button in a horizontal line.
 
+xxx
 
 ### Setting the size of a control
 
-A control has a *height* and a *width* property that sets the size of the control. The unit is pixel. There is a also a *Size* property for setting both the height and the width. This property expects a *Rectangle* object.
+A control has a *height* and a *width* property that sets the size of the control. The unit is pixel. There is a also a *Size* property for setting both the height and the width. This property expects a *Rectangle* object from the *System.Drawing* namespace.
 
+**example:**
+
+The following example creates a form with a button and gives the button a certain size.
+
+xxx
+
+### Setting the position of a control
+
+A control has a *Left* and a *Top* property that sets the coordinates of the upper left corner of the control. The unit is pixel and the numbers are always relative to the parent container. For a control its the either Form or another container control like a *GroupBox*. For a Form its usually the screen if its not assigned a specific owner as the parent window. There is a also a *Location* property for setting both the x and the y coordinate. This property expects a *Point* object from the *System.Drawing* namespace.
+
+**example:**
+
+The following example creates a form with a button and places the button a certain position of the screen.
+
+xxx
 
 ## Connecting events
 
