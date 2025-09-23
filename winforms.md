@@ -2,7 +2,7 @@
 
 **last update**: 23/09/2025
 
-*WinForms* (or *WinForms* for short) is the name for the classes in the namespace *Syxstem.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
+*WinForms* (or *WinForms* for short) is the name for the classes in the namespace *System.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
 
 *WinForms* (as part of *.Net*) does **NOT** work on *Linux*, *MacOS* etc. (although there have been working implementations as part of the *Mono* project)
 
