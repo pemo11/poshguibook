@@ -1,6 +1,6 @@
 # GUIs based on Windows Forms (WinForms)
 
-**last update**: 15/09/2025
+**last update**: 23/09/2025
 
 *WinForms* (or *WinForms* for short) is the name for the classes in the namespace *Syxstem.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
 
@@ -225,7 +225,28 @@ A control is always placed inside a container. A container is either the *Form* 
 
 The following example places three button in a horizontal line.
 
-xxx
+```PowerShell
+using namespace System.Windows.Forms
+
+Add-Type -AssemblyName System.Windows.Forms
+
+$btn1 = [Button]::New()
+$btn1.Text = "Button 1"
+$btn1.Location = [Drawing.Point]::New(10,10)
+$btn2 = [Button]::New()
+$btn2.Text = "Button 2"
+$btn2.Location = [Drawing.Point]::New(100,10)
+$btn3 = [Button]::New()
+$btn3.Text = "Button 3"
+$btn3.Location = [Drawing.Point]::New(190,10)
+$form = [Form]::New()
+$form.Text = "Form with three Buttons"
+$form.Controls.Add($btn1)
+$form.Controls.Add($btn2)
+$form.Controls.Add($btn3)
+$form.Size = [Drawing.Size]::New(320,200)
+[Void]$form.ShowDialog()
+```
 
 ### Setting the size of a control
 
@@ -235,7 +256,23 @@ A control has a *height* and a *width* property that sets the size of the contro
 
 The following example creates a form with a button and gives the button a certain size.
 
-xxx
+```PowerShell
+using namespace System.Windows.Forms
+using namespace System.Drawing
+
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+$btn1 = [Button]::New()
+$btn1.Text = "Click Me!"
+$btn1.Location = [Drawing.Point]::New(50,50)
+$btn1.Size = [Drawing.Size]::New(120,50)
+
+$form = [Form]::New()
+$form.Text = "Form with Button"
+$form.Controls.Add($btn1)
+[Void]$form.ShowDialog()
+```
 
 ### Setting the position of a control
 
@@ -245,7 +282,22 @@ A control has a *Left* and a *Top* property that sets the coordinates of the upp
 
 The following example creates a form with a button and places the button a certain position of the screen.
 
-xxx
+```PowerShell
+using namespace System.Windows.Forms
+using namespace System.Drawing
+
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+$btn1 = [Button]::New()
+$btn1.Text = "Click Me!"
+$btn1.Location = [Drawing.Point]::New(50,50)
+
+$form = [Form]::New()
+$form.Text = "Form with Button"
+$form.Controls.Add($btn1)
+[Void]$form.ShowDialog()
+```
 
 ## Connecting events
 
@@ -258,7 +310,7 @@ Each control offers several dozen events like *Click*, *MouseClick* or *GotFocus
 Since events are members like *Properties* and *Methods* they can be listed to by *Get-Member*. The following example lists all of the 94 (!) events of the *Form* class.
 
 ```PowerShell
-[System.WIndows.Forms.Form]::New() | Get-Member -MemberType Event
+[System.Windows.Forms.Form]::New() | Get-Member -MemberType Event
 ```
 or by going directly through the *type* object:
 
@@ -280,7 +332,7 @@ All the methods accept either a *System.EventHandler* or an object that is deriv
 
 **example**
 
-The following examples display a form with a button. Clicking the button will display a messagebox. Since the script only contains the bare minimum neeed to display the form with a button it does not look nice but the click event has been connected with a Scriptblock.
+The following examples displays a form with a button. Clicking the button will display a messagebox. Since the script only contains the bare minimum needed to display the form with a button it does not look nice but the click event has been connected with a Scriptblock.
 
 ```PowerShell
 using namespace System.Windows.Forms
@@ -292,5 +344,47 @@ $btn1.Text = "Click Me!"
 $f.Controls.Add($btn1)
 $btn1.add_click({ [Messagebox]::Show("Thank you for clicking me!", [DateTime]::Now)})
 $f.ShowDialog()
+```
+
+### Connecting several buttons with the same event handler
+
+Its no problem of course to connect several buttons with the same event handler. Since *PowerShell* has a flexible type system, the controls does not have to have the same type.
+
+**example**
+
+The following example displays a form with three buttons that are connected to the same event handler. It still possible to distinguish which button had been clicked by looking at the special variable *Sender* that only contains a value within an event handler.
+
+```PowerShell
+using namespace System.Windows.Forms
+
+Add-Type -AssemblyName System.Windows.Forms
+
+$btn1 = [Button]::New()
+$btn1.Text = "Button 1"
+$btn1.Location = [Drawing.Point]::New(10,10)
+$btn2 = [Button]::New()
+$btn2.Text = "Button 2"
+$btn2.Location = [Drawing.Point]::New(100,10)
+$btn3 = [Button]::New()
+$btn3.Text = "Button 3"
+$btn3.Location = [Drawing.Point]::New(190,10)
+$form = [Form]::New()
+$form.Text = "Form with three Buttons"
+$form.Controls.Add($btn1)
+$form.Controls.Add($btn2)
+$form.Controls.Add($btn3)
+
+# Now comes the click event handler
+$SbClick = {
+    # type names are optional of course
+    param([Object]$sender, [EventArgs]$eventArgs)
+    [MessageBox]::Show("You clicked $($sender.Text)", "Aloha")
+}
+$btn1.Add_Click($SbClick)
+$btn2.Add_Click($SbClick)
+$btn3.Add_Click($SbClick)
+
+$form.Size = [Drawing.Size]::New(320,200)
+[Void]$form.ShowDialog()
 
 ```
