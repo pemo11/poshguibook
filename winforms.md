@@ -1,6 +1,6 @@
 # GUIs based on Windows Forms (WinForms)
 
-**last update**: 23/09/2025
+**last update**: 24/11/2025
 
 *WinForms* (or *WinForms* for short) is the name for the classes in the namespace *System.Windows.Forms* that allow the creation of more or less sophisticated graphical user interfaces for .Net desktop applicatations on Windows.
 
@@ -131,11 +131,14 @@ In the CLI *Using Namespace* can only hold one reference at a time so using it t
 
 I have absolutely of proof for the following assertion. But when *Jeffrey Snover* (the inventor of what became later *PowerShell*) once asked me at a software developer conference what feature was missing in the version 2.0 of *PowerShell* I said there should be a "using namespace" like in *C#*.
 
-## The form class
+## The Form class
 
-The *form* class represents a window. It can be the main window of the application but it can also be a dialogbox.
+The *Form* class represents a window. It can be the main window of the application but it can also be a dialogbox.
 
-The first step is to create a new *form* object.
+**note:**
+Real programmers know of course that every window is just a data structure with properties that define the attributes like the size, the title and if its resizable or not. The most important attribute is the "handle of the window"-property or "hwnd" for short because its a unique value that identifies that window. The property of the form class to get that handle is called *Handle*.
+
+The first step is to create a new *Form* object.
 
 There are two ways to show the new window:
 
@@ -148,30 +151,37 @@ For the PowerShell CLI only *ShowDialog()* works.
 
 The *System.Windows.Forms* namespace contains serveral dozen control classes. A few examples are *Button* (for a command button), *label* (for a text field), *TextBox* (for a text input field) or *ListBox* (for a list of text items).
 
-Each of theses classes are instantiated through its static *new* method that is always parameterless.
+Each of theses classes can be instantiated through its static *new* method that is always parameterless.
 
 **example:**
 
-The following example creates a command button.
+The following example creates a command button by instantiating the *Button* class.
 
 ```PowerShell
 [System.Windows.Forms.Button]::New()
 ```
-or a little shorter assuming a `using namespace System.Windows.Forms`:
+Or a little shorter assuming a `using namespace System.Windows.Forms`:
 
 ```PowerShell
 [Button]::New()
 ```
 
-Since it does not make any sense to create the instance of class without assigning it to variable there has to an assignment to a PowerShell variable.
+In the early days of *PowerShell* a class instantiance was done by using the *New-Object*-Cmdlet.
+
+```PowerShell
+New-Object -Type System.Windows.Forms.Button
+```
+
+This time the type name is not put inside brackets because the *Type*-Parameter expects a string.
+
+Since it does not make any sense to create the instance of class without assigning it to a variable there the created instance will be assigned to a PowerShell variable of course.
 
 ```PowerShell
 $btn1 = [Button]::New()
 ```
+And it also does make any sense to not set at least the *Text*-Property so that something is displayed inside the button area.
 
-And it does make any sense to not set at least the *Text*-Property so something is displayed inside the button area.
-
-This can be done either in two steps:
+This can be done in two separate steps:
 
 ```PowerShell
 $btn1 = [Button]::New()
@@ -186,7 +196,7 @@ $btn1 = New-Object -Type Button -Property @{Text = "Click Me!"}
 
 Using this syntax is more convenient if several properties should be set. And its really convenient if several controls should be set with the same property values since a single hashtable variable can be used.
 
-Having a button does not mean that its already visible. It has to added to the *Control* collection of either the *Form* or another control with a *Control* property.
+Having a button does not mean that its already visible on the form. It has to added to the *control* collection of either the *Form* or any another control with a *Controls* property.
 
 **example:**
 
